@@ -7,10 +7,11 @@ import 'package:image_downloader/image_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:wall_repo/pages/favorite_page.dart';
 import 'package:wall_repo/services/getData.dart';
 
 class HomePage extends StatefulWidget {
-  List<String> liked = [];
+ final List<String> liked ;
   var togglecall;
   HomePage({this.togglecall,required this.liked});
   @override
@@ -98,9 +99,9 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       child: IconButton(
                                           onPressed: () {setState(() {
-                                            widget.liked.add(snapshot.data[index].toString());
+                                            widget.liked.add(snapshot.data[index]["urls"]["regular"].toString());
                                           });},
-                                          icon: (!(widget.liked.contains(snapshot.data[index].toString())))?Icon(
+                                          icon: (!(widget.liked.contains(snapshot.data[index]["urls"]["regular"].toString())))?Icon(
                                             Icons.favorite_border_outlined,
                                             color: Colors.black,
                                           ):Icon(Icons.favorite_rounded,
@@ -148,6 +149,13 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.color_lens),
                 onPressed: widget.togglecall,
+              ),
+              IconButton(
+                icon: Icon(Icons.ac_unit),
+                onPressed: (){
+                  print(widget.liked);
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>FavoritePage(widget.liked)));
+                },
               ),
             ],
           ),
