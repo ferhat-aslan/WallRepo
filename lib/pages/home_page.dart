@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: <Color>[Colors.red, Colors.blue]))),
+                      colors: <Color>[Color(0xff7F7FD5), Color(0xff91EAE4)]))),
         ),
         body: FutureBuilder(
             future: downloadData(), // function where you call your api
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {save(snapshot.data[index]["urls"]["regular"]);},
                                           icon: Icon(
                                             Icons.downloading_outlined,
                                             color: Colors.black,
@@ -149,5 +150,24 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  Future save(String url)async{
+    try {
+  // Saved with this method.
+  var imageId = await ImageDownloader.downloadImage(url);
+  if (imageId == null) {
+    return;
+  }
+
+  // Below is a method of obtaining saved image information.
+  var fileName = await ImageDownloader.findName(imageId);
+  var path = await ImageDownloader.findPath(imageId);
+  var size = await ImageDownloader.findByteSize(imageId);
+  var mimeType = await ImageDownloader.findMimeType(imageId);
+} on PlatformException catch (error) {
+  print(error);
+}
+
   }
 }
