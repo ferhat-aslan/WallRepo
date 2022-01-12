@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wall_repo/pages/home_page.dart';
 
 class FavoritePage extends StatefulWidget {
   final List<String> lpd ;
-  FavoritePage(this.lpd);
+  final  togglecall;
+  FavoritePage(this.lpd, this.togglecall);
 
   @override
   _FavoritePageState createState() => _FavoritePageState(lpd);
@@ -20,6 +22,71 @@ class _FavoritePageState extends State<FavoritePage> {
     var yukseklik = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        drawer: Drawer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DrawerHeader(
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/backdrawer.jpg"))),
+                  child: Stack(
+                    children: [
+                      Positioned(
+            bottom: 12.0,
+            left: 16.0,
+            child: Text("Wallpaper Repo",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w500))),
+                    ],
+                  ),),
+                  SizedBox(height: yukseklik*0.065,),
+              TextButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.home),
+                                  SizedBox(width: genislik*0.03,),
+                      Text('Anasayfa',style: TextStyle(fontSize: 17),),
+                    ],
+                  ),
+                ),
+                onPressed: (){Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage(liked: widget.lpd,togglecall: widget.togglecall,)), (route) => false);},
+
+              ),
+              SizedBox(height: yukseklik*0.02,),
+              TextButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                    Icon(Icons.favorite_outlined),
+                                  SizedBox(width: genislik*0.03,),
+
+                      Text('Kaydedilenler',style: TextStyle(fontSize: 17),),
+                    ],
+                  ),
+                ),
+                onPressed: () {
+                  
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              FavoritePage(widget.lpd, widget.togglecall)),(route) => false);
+                },
+              ),
+              SizedBox(height: yukseklik*0.02,),
+              
+            ],
+          ),
+        ),
 appBar: AppBar(
           centerTitle: true,
           title: Text(
@@ -32,8 +99,7 @@ appBar: AppBar(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: <Color>[Color(0xff7F7FD5), Color(0xff91EAE4)]))),
-    actions: [IconButton(onPressed: (){print(f);}, icon: Icon(Icons.favorite_rounded,
-                                            color: Colors.red,))],
+    
     ),
         body: Padding(
                     padding: const EdgeInsets.all(11.0),
@@ -73,9 +139,23 @@ appBar: AppBar(
                                       ),
                                       child: IconButton(
                                           onPressed: () {
-                                            //setState(() {
-                                          //   widget.liked.add(snapshot.data[index].toString());
-                                          // });
+                                           
+                                            String link=widget.lpd[index]
+                                                      .toString();
+                                            if(!(widget.lpd.contains(link))){
+                                              setState(() {
+widget.lpd.add(widget.lpd[index].toString());
+
+                                            });
+                                            }
+                                            else{
+                                              setState(() {
+                                                widget.lpd.remove(widget.lpd[index].toString());
+                                              });
+                                              
+                                            }
+                                            
+                                          
                                           },
                                           icon: Icon(Icons.favorite_rounded,
                                             color: Colors.red,)),

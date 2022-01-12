@@ -11,9 +11,9 @@ import 'package:wall_repo/pages/favorite_page.dart';
 import 'package:wall_repo/services/getData.dart';
 
 class HomePage extends StatefulWidget {
- final List<String> liked ;
+  final List<String> liked;
   var togglecall;
-  HomePage({this.togglecall,required this.liked});
+  HomePage({this.togglecall, required this.liked});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -98,14 +98,41 @@ class _HomePageState extends State<HomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {setState(() {
-                                            widget.liked.add(snapshot.data[index]["urls"]["regular"].toString());
-                                          });},
-                                          icon: (!(widget.liked.contains(snapshot.data[index]["urls"]["regular"].toString())))?Icon(
-                                            Icons.favorite_border_outlined,
-                                            color: Colors.black,
-                                          ):Icon(Icons.favorite_rounded,
-                                            color: Colors.red,)),
+                                          onPressed: () {
+                                            String link=snapshot.data[index]["urls"]
+                                                          ["regular"]
+                                                      .toString();
+                                            if(!(widget.liked.contains(link))){
+                                              setState(() {
+widget.liked.add(snapshot.data[index]["urls"]
+                                                          ["regular"]
+                                                      .toString());
+
+                                            });
+                                            }
+                                            else{
+                                              setState(() {
+                                                widget.liked.remove(snapshot.data[index]["urls"]
+                                                          ["regular"]
+                                                      .toString());
+                                              });
+                                              
+                                            }
+                                            
+                                          },
+                                          icon: (!(widget.liked.contains(
+                                                  snapshot.data[index]["urls"]
+                                                          ["regular"]
+                                                      .toString())))
+                                              ? Icon(
+                                                  Icons
+                                                      .favorite_border_outlined,
+                                                  color: Colors.black,
+                                                )
+                                              : Icon(
+                                                  Icons.favorite_rounded,
+                                                  color: Colors.red,
+                                                )),
                                     ),
                                   ),
                                 ),
@@ -120,7 +147,10 @@ class _HomePageState extends State<HomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {save(snapshot.data[index]["urls"]["regular"]);},
+                                          onPressed: () {
+                                            save(snapshot.data[index]["urls"]
+                                                ["regular"]);
+                                          },
                                           icon: Icon(
                                             Icons.downloading_outlined,
                                             color: Colors.black,
@@ -142,21 +172,66 @@ class _HomePageState extends State<HomePage> {
 
         drawer: Drawer(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                  // decoration: BoxDecoration(image: DecorationImage(image: image)),
+              DrawerHeader(
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/backdrawer.jpg"))),
+                  child: Stack(
+                    children: [
+                      Positioned(
+            bottom: 12.0,
+            left: 16.0,
+            child: Text("Wallpaper Repo",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w500))),
+                    ],
+                  ),),
+                  SizedBox(height: yukseklik*0.065,),
+              TextButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.home),
+                                  SizedBox(width: genislik*0.03,),
+                      Text('Anasayfa',style: TextStyle(fontSize: 17),),
+                    ],
                   ),
-              IconButton(
-                icon: Icon(Icons.color_lens),
-                onPressed: widget.togglecall,
+                ),
+                onPressed: (){Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage(liked: widget.liked,togglecall: widget.togglecall,)), (route) => false);},
+
               ),
-              IconButton(
-                icon: Icon(Icons.ac_unit),
-                onPressed: (){
+              SizedBox(height: yukseklik*0.02,),
+              TextButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                    Icon(Icons.favorite_outlined),
+                                  SizedBox(width: genislik*0.03,),
+
+                      Text('Kaydedilenler',style: TextStyle(fontSize: 17),),
+                    ],
+                  ),
+                ),
+                onPressed: () {
                   print(widget.liked);
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>FavoritePage(widget.liked)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              FavoritePage(widget.liked, widget.togglecall)));
                 },
               ),
+              SizedBox(height: yukseklik*0.02,),
+              
             ],
           ),
         ),
@@ -164,22 +239,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future save(String url)async{
+  Future save(String url) async {
     try {
-  // Saved with this method.
-  var imageId = await ImageDownloader.downloadImage(url);
-  if (imageId == null) {
-    return;
-  }
+      // Saved with this method.
+      var imageId = await ImageDownloader.downloadImage(url);
+      if (imageId == null) {
+        return;
+      }
 
-  // Below is a method of obtaining saved image information.
-  var fileName = await ImageDownloader.findName(imageId);
-  var path = await ImageDownloader.findPath(imageId);
-  var size = await ImageDownloader.findByteSize(imageId);
-  var mimeType = await ImageDownloader.findMimeType(imageId);
-} on PlatformException catch (error) {
-  print(error);
-}
-
+      // Below is a method of obtaining saved image information.
+      var fileName = await ImageDownloader.findName(imageId);
+      var path = await ImageDownloader.findPath(imageId);
+      var size = await ImageDownloader.findByteSize(imageId);
+      var mimeType = await ImageDownloader.findMimeType(imageId);
+    } on PlatformException catch (error) {
+      print(error);
+    }
   }
 }
