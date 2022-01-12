@@ -10,8 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:wall_repo/services/getData.dart';
 
 class HomePage extends StatefulWidget {
+  List<String> liked = [];
   var togglecall;
-  HomePage({this.togglecall});
+  HomePage({this.togglecall,required this.liked});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -96,11 +97,14 @@ class _HomePageState extends State<HomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
+                                          onPressed: () {setState(() {
+                                            widget.liked.add(snapshot.data[index].toString());
+                                          });},
+                                          icon: (!(widget.liked.contains(snapshot.data[index].toString())))?Icon(
                                             Icons.favorite_border_outlined,
                                             color: Colors.black,
-                                          )),
+                                          ):Icon(Icons.favorite_rounded,
+                                            color: Colors.red,)),
                                     ),
                                   ),
                                 ),

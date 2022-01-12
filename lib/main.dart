@@ -17,18 +17,34 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool darkTema=true;
+  List<String> lkd =[];
   @override
   void initState() {
     super.initState();
     initTema();
+    loadLiked();
   }
   
+loadLiked()async{
+SharedPreferences pref = await SharedPreferences.getInstance();
+if(pref.getStringList("likedPhotos")!= null)
+{
+lkd=pref.getStringList("likedPhotos")!;
+}
+else{
+  pref.setStringList("likedPhotos",lkd);
+}
+setState(() {
+  
+});
 
+}
 initTema()async{
   SharedPreferences pref =await SharedPreferences.getInstance();
   if(pref.getBool("tema")!=null)
 {
   darkTema=pref.getBool("tema")!;
+  
 }
 else{
   pref.setBool("tema", darkTema);
@@ -61,7 +77,7 @@ pref.setBool("tema", true);
     return MaterialApp(
       title: 'wallpaper Repo',
       theme: darkTema?ThemeData.dark():ThemeData.light(),
-      home: HomePage(togglecall: toggleTema,),
+      home: HomePage(togglecall: toggleTema,liked: [],),
     );
   }
 }
