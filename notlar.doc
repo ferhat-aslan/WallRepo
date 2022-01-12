@@ -1,0 +1,18 @@
+    body: FutureBuilder(
+    future: downloadData(), // function where you call your api
+    builder: (BuildContext context, AsyncSnapshot snapshot) {  // AsyncSnapshot<Your object type>
+      if( snapshot.connectionState == ConnectionState.waiting){
+          return  Center(child: Text('Please wait its loading...'));
+      }else{
+          if (snapshot.hasError)
+            return Center(child: Text('Error: ${snapshot.error}'));
+          else
+            return ListView.builder(
+        itemCount: snapshot.data.length,
+        itemBuilder: (context, index) {
+          
+          return Image.network(snapshot.data[index]["urls"]["small"].toString());
+        },
+      );  // snapshot.data  :- get your object which is pass from your downloadData() function
+      }
+    },
