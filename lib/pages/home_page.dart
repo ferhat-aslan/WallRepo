@@ -58,27 +58,73 @@ class _HomePageState extends State<HomePage> {
                 if (snapshot.hasError)
                   return Center(child: Text('Error: ${snapshot.error}'));
                 else
-                  return GridView.builder(
-                    semanticChildCount: 2,
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-
-                          maxCrossAxisExtent: 200,
-                          childAspectRatio: 1 / 2,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Container(
-                            width: genislik*0.4,
-                            height: yukseklik*0.4,
-                              child: Image.network(
-                            snapshot.data[index]["urls"]["small"].toString(),
-                            fit: BoxFit.cover,
-                          )),
-                        );
-                      });
+                  return Padding(
+                    padding: const EdgeInsets.all(11.0),
+                    child: GridView.builder(
+                        semanticChildCount: 2,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                        ),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Stack(
+                              alignment: Alignment.center,
+                              textDirection: TextDirection.rtl,
+                              fit: StackFit.loose,
+                              clipBehavior: Clip.hardEdge,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                      width: genislik * 0.45,
+                                      height: yukseklik * 0.35,
+                                      child: Image.network(
+                                        snapshot.data[index]["urls"]["small"]
+                                            .toString(),
+                                        fit: BoxFit.cover,
+                                      )),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 0, 20, 25),
+                                    child: Container(
+                                      decoration: new BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.favorite_border_outlined,
+                                            color: Colors.black,
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 0, 10, 25),
+                                    child: Container(
+                                      decoration: new BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.downloading_outlined,
+                                            color: Colors.black,
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                              ]);
+                        }),
+                  );
               }
             }),
 
