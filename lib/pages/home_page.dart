@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:wall_repo/pages/favorite_page.dart';
 import 'package:wall_repo/services/getData.dart';
+import 'package:wall_repo/services/save.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
   final List<String> liked;
@@ -64,8 +66,11 @@ class _HomePageState extends State<HomePage> {
                   return Padding(
                     padding: const EdgeInsets.all(11.0),
                     child: GridView.builder(
+
                         semanticChildCount: 2,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 15,
                           crossAxisCount: 2,
                         ),
                         itemCount: snapshot.data.length,
@@ -99,26 +104,25 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       child: IconButton(
                                           onPressed: () {
-                                            String link=snapshot.data[index]["urls"]
-                                                          ["regular"]
-                                                      .toString();
-                                            if(!(widget.liked.contains(link))){
+                                            String link = snapshot.data[index]
+                                                    ["urls"]["regular"]
+                                                .toString();
+                                            if (!(widget.liked
+                                                .contains(link))) {
                                               setState(() {
-widget.liked.add(snapshot.data[index]["urls"]
-                                                          ["regular"]
-                                                      .toString());
-
-                                            });
-                                            }
-                                            else{
-                                              setState(() {
-                                                widget.liked.remove(snapshot.data[index]["urls"]
-                                                          ["regular"]
-                                                      .toString());
+                                                widget.liked.add(snapshot
+                                                    .data[index]["urls"]
+                                                        ["regular"]
+                                                    .toString());
                                               });
-                                              
+                                            } else {
+                                              setState(() {
+                                                widget.liked.remove(snapshot
+                                                    .data[index]["urls"]
+                                                        ["regular"]
+                                                    .toString());
+                                              });
                                             }
-                                            
                                           },
                                           icon: (!(widget.liked.contains(
                                                   snapshot.data[index]["urls"]
@@ -147,9 +151,35 @@ widget.liked.add(snapshot.data[index]["urls"]
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {
-                                            save(snapshot.data[index]["urls"]
-                                                ["regular"]);
+                                          onPressed: () async{
+                                          try {
+       
+       // Saved with this method.
+       var imageId =
+           await ImageDownloader.downloadImage(snapshot.data[index]["urls"]["regular"].toString());
+       if (imageId == null) {
+          return;
+       }
+       // Below is a method of obtaining saved image information.
+       var fileName = await ImageDownloader.findName(imageId);
+       var path = await ImageDownloader.findPath(imageId);
+       var size = await ImageDownloader.findByteSize(imageId);
+       var mimeType = await ImageDownloader.findMimeType(imageId);
+       
+       
+      } on PlatformException catch (error) {
+          print(error);
+        }
+                                          
+                                          
+                                          
+                                           // setState(() async{
+     //  await save(snapshot.data[index]["urls"]
+                                             //   ["full"].toString()).then((value) => print(snapshot.data[index]["urls"]
+                                            //    ["full"].toString()));
+                                          //  print("object");
+  //   });
+                                           
                                           },
                                           icon: Icon(
                                             Icons.downloading_outlined,
@@ -175,49 +205,71 @@ widget.liked.add(snapshot.data[index]["urls"]
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DrawerHeader(
-                  margin: EdgeInsets.zero,
-                  padding: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/backdrawer.jpg"))),
-                  child: Stack(
-                    children: [
-                      Positioned(
-            bottom: 12.0,
-            left: 16.0,
-            child: Text("Wallpaper Repo",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w500))),
-                    ],
-                  ),),
-                  SizedBox(height: yukseklik*0.065,),
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage("assets/images/backdrawer.jpg"))),
+                child: Stack(
+                  children: [
+                    Positioned(
+                        bottom: 12.0,
+                        left: 16.0,
+                        child: Text("Wallpaper Repo",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w500))),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: yukseklik * 0.065,
+              ),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
                       Icon(Icons.home),
-                                  SizedBox(width: genislik*0.03,),
-                      Text('Anasayfa',style: TextStyle(fontSize: 17),),
+                      SizedBox(
+                        width: genislik * 0.03,
+                      ),
+                      Text(
+                        'Anasayfa',
+                        style: TextStyle(fontSize: 17),
+                      ),
                     ],
                   ),
                 ),
-                onPressed: (){Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage(liked: widget.liked,togglecall: widget.togglecall,)), (route) => false);},
-
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                liked: widget.liked,
+                                togglecall: widget.togglecall,
+                              )),
+                      (route) => false);
+                },
               ),
-              SizedBox(height: yukseklik*0.02,),
+              SizedBox(
+                height: yukseklik * 0.02,
+              ),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                    Icon(Icons.favorite_outlined),
-                                  SizedBox(width: genislik*0.03,),
-
-                      Text('Kaydedilenler',style: TextStyle(fontSize: 17),),
+                      Icon(Icons.favorite_outlined),
+                      SizedBox(
+                        width: genislik * 0.03,
+                      ),
+                      Text(
+                        'Kaydedilenler',
+                        style: TextStyle(fontSize: 17),
+                      ),
                     ],
                   ),
                 ),
@@ -230,16 +282,20 @@ widget.liked.add(snapshot.data[index]["urls"]
                               FavoritePage(widget.liked, widget.togglecall)));
                 },
               ),
-              SizedBox(height: yukseklik*0.02,),
-              
+              SizedBox(
+                height: yukseklik * 0.02,
+              ),
             ],
           ),
         ),
       ),
     );
   }
+   save(String url) async {
+     
+  if (await Permission.storage.isGranted) {
+  // Use location.
 
-  Future save(String url) async {
     try {
       // Saved with this method.
       var imageId = await ImageDownloader.downloadImage(url);
@@ -255,5 +311,5 @@ widget.liked.add(snapshot.data[index]["urls"]
     } on PlatformException catch (error) {
       print(error);
     }
-  }
+  }}
 }

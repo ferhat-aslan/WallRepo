@@ -75,6 +75,7 @@ pref.setBool("tema", true);
  @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'wallpaper Repo',
       theme: darkTema?ThemeData.dark():ThemeData.light(),
       home: HomePage(togglecall: toggleTema,liked: [],),

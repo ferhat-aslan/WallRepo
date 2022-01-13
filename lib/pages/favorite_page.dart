@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wall_repo/pages/home_page.dart';
+import 'package:wall_repo/services/getData.dart';
+import 'package:wall_repo/services/save.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FavoritePage extends StatefulWidget {
   final List<String> lpd ;
@@ -106,6 +109,8 @@ appBar: AppBar(
                     child: GridView.builder(
                         semanticChildCount: 2,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 15,
                           crossAxisCount: 2,
                         ),
                         itemCount: f.length,
@@ -173,7 +178,9 @@ widget.lpd.add(widget.lpd[index].toString());
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            save(widget.lpd[index].toString());
+                                          },
                                           icon: Icon(
                                             Icons.downloading_outlined,
                                             color: Colors.black,
