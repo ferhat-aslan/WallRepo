@@ -11,6 +11,7 @@ import 'package:wall_repo/pages/favorite_page.dart';
 import 'package:wall_repo/services/getData.dart';
 import 'package:wall_repo/services/save.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:wall_repo/widgets/dialog.dart';
 
 class HomePage extends StatefulWidget {
   final List<String> liked;
@@ -66,7 +67,6 @@ class _HomePageState extends State<HomePage> {
                   return Padding(
                     padding: const EdgeInsets.all(11.0),
                     child: GridView.builder(
-
                         semanticChildCount: 2,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisSpacing: 5,
@@ -75,120 +75,133 @@ class _HomePageState extends State<HomePage> {
                         ),
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Stack(
-                              alignment: Alignment.center,
-                              textDirection: TextDirection.rtl,
-                              fit: StackFit.loose,
-                              clipBehavior: Clip.hardEdge,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                      width: genislik * 0.45,
-                                      height: yukseklik * 0.35,
-                                      child: Image.network(
-                                        snapshot.data[index]["urls"]["small"]
-                                            .toString(),
-                                        fit: BoxFit.cover,
-                                      )),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 0, 20, 25),
+                          return GestureDetector(
+                            onTap: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (_) => ImageDialog(snapshot
+                                      .data[index]["urls"]["regular"]
+                                      .toString()));
+                            },
+                            child: Stack(
+                                alignment: Alignment.center,
+                                textDirection: TextDirection.rtl,
+                                fit: StackFit.loose,
+                                clipBehavior: Clip.hardEdge,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
                                     child: Container(
-                                      decoration: new BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: IconButton(
-                                          onPressed: () {
-                                            String link = snapshot.data[index]
-                                                    ["urls"]["regular"]
-                                                .toString();
-                                            if (!(widget.liked
-                                                .contains(link))) {
-                                              setState(() {
-                                                widget.liked.add(snapshot
-                                                    .data[index]["urls"]
-                                                        ["regular"]
-                                                    .toString());
-                                              });
-                                            } else {
-                                              setState(() {
-                                                widget.liked.remove(snapshot
-                                                    .data[index]["urls"]
-                                                        ["regular"]
-                                                    .toString());
-                                              });
-                                            }
-                                          },
-                                          icon: (!(widget.liked.contains(
-                                                  snapshot.data[index]["urls"]
+                                        width: genislik * 0.45,
+                                        height: yukseklik * 0.35,
+                                        child: Image.network(
+                                          snapshot.data[index]["urls"]["small"]
+                                              .toString(),
+                                          fit: BoxFit.cover,
+                                        )),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 25),
+                                      child: Container(
+                                        decoration: new BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: IconButton(
+                                            onPressed: () {
+                                              String link = snapshot.data[index]
+                                                      ["urls"]["regular"]
+                                                  .toString();
+                                              if (!(widget.liked
+                                                  .contains(link))) {
+                                                setState(() {
+                                                  widget.liked.add(snapshot
+                                                      .data[index]["urls"]
                                                           ["regular"]
-                                                      .toString())))
-                                              ? Icon(
-                                                  Icons
-                                                      .favorite_border_outlined,
-                                                  color: Colors.black,
-                                                )
-                                              : Icon(
-                                                  Icons.favorite_rounded,
-                                                  color: Colors.red,
-                                                )),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 0, 10, 25),
-                                    child: Container(
-                                      decoration: new BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
+                                                      .toString());
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  widget.liked.remove(snapshot
+                                                      .data[index]["urls"]
+                                                          ["regular"]
+                                                      .toString());
+                                                });
+                                              }
+                                            },
+                                            icon: (!(widget.liked.contains(
+                                                    snapshot.data[index]["urls"]
+                                                            ["regular"]
+                                                        .toString())))
+                                                ? Icon(
+                                                    Icons
+                                                        .favorite_border_outlined,
+                                                    color: Colors.black,
+                                                  )
+                                                : Icon(
+                                                    Icons.favorite_rounded,
+                                                    color: Colors.red,
+                                                  )),
                                       ),
-                                      child: IconButton(
-                                          onPressed: () async{
-                                          try {
-       
-       // Saved with this method.
-       var imageId =
-           await ImageDownloader.downloadImage(snapshot.data[index]["urls"]["full"].toString());
-       if (imageId == null) {
-          return;
-       }
-       // Below is a method of obtaining saved image information.
-       var fileName = await ImageDownloader.findName(imageId);
-       var path = await ImageDownloader.findPath(imageId);
-       var size = await ImageDownloader.findByteSize(imageId);
-       var mimeType = await ImageDownloader.findMimeType(imageId);
-       
-       
-      } on PlatformException catch (error) {
-          print(error);
-        }
-                                          
-                                          
-                                          
-                                           // setState(() async{
-     //  await save(snapshot.data[index]["urls"]
-                                             //   ["full"].toString()).then((value) => print(snapshot.data[index]["urls"]
-                                            //    ["full"].toString()));
-                                          //  print("object");
-  //   });
-                                           
-                                          },
-                                          icon: Icon(
-                                            Icons.downloading_outlined,
-                                            color: Colors.black,
-                                          )),
                                     ),
                                   ),
-                                ),
-                              ]);
+                                  Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 10, 25),
+                                      child: Container(
+                                        decoration: new BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              try {
+                                                // Saved with this method.
+                                                var imageId =
+                                                    await ImageDownloader
+                                                        .downloadImage(snapshot
+                                                            .data[index]["urls"]
+                                                                ["full"]
+                                                            .toString());
+                                                if (imageId == null) {
+                                                  return;
+                                                }
+                                                // Below is a method of obtaining saved image information.
+                                                var fileName =
+                                                    await ImageDownloader
+                                                        .findName(imageId);
+                                                var path = await ImageDownloader
+                                                    .findPath(imageId);
+                                                var size = await ImageDownloader
+                                                    .findByteSize(imageId);
+                                                var mimeType =
+                                                    await ImageDownloader
+                                                        .findMimeType(imageId);
+                                              } on PlatformException catch (error) {
+                                                print(error);
+                                              }
+
+                                              // setState(() async{
+                                              //  await save(snapshot.data[index]["urls"]
+                                              //   ["full"].toString()).then((value) => print(snapshot.data[index]["urls"]
+                                              //    ["full"].toString()));
+                                              //  print("object");
+                                              //   });
+                                            },
+                                            icon: Icon(
+                                              Icons.downloading_outlined,
+                                              color: Colors.black,
+                                            )),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                          );
                         }),
                   );
               }
@@ -274,7 +287,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () {
-                  
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -287,22 +299,28 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Icon((Theme.of(context).backgroundColor==ThemeData.dark().backgroundColor)?Icons.light_mode:Icons.dark_mode),
+                      Icon((Theme.of(context).backgroundColor ==
+                              ThemeData.dark().backgroundColor)
+                          ? Icons.light_mode
+                          : Icons.dark_mode),
                       SizedBox(
                         width: genislik * 0.03,
                       ),
                       Text(
-                        (Theme.of(context).backgroundColor==ThemeData.dark().backgroundColor)?"Açık Tema":"Koyu Tema",
+                        (Theme.of(context).backgroundColor ==
+                                ThemeData.dark().backgroundColor)
+                            ? "Açık Tema"
+                            : "Koyu Tema",
                         style: TextStyle(fontSize: 17),
                       ),
                     ],
                   ),
                 ),
                 onPressed: () {
-                  setState(() { 
+                  setState(() {
                     widget.togglecall();
                   });
-                  },
+                },
               ),
               SizedBox(
                 height: yukseklik * 0.02,
@@ -313,25 +331,28 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-   save(String url) async {
-     
-  if (await Permission.storage.isGranted) {
-  // Use location.
 
-    try {
-      // Saved with this method.
-      var imageId = await ImageDownloader.downloadImage(url);
-      if (imageId == null) {
-        return;
+  save(String url) async {
+    if (await Permission.storage.isGranted) {
+      // Use location.
+
+      try {
+        // Saved with this method.
+        var imageId = await ImageDownloader.downloadImage(url);
+        if (imageId == null) {
+          return;
+        }
+
+        // Below is a method of obtaining saved image information.
+        var fileName = await ImageDownloader.findName(imageId);
+        var path = await ImageDownloader.findPath(imageId);
+        var size = await ImageDownloader.findByteSize(imageId);
+        var mimeType = await ImageDownloader.findMimeType(imageId);
+      } on PlatformException catch (error) {
+        print(error);
       }
-
-      // Below is a method of obtaining saved image information.
-      var fileName = await ImageDownloader.findName(imageId);
-      var path = await ImageDownloader.findPath(imageId);
-      var size = await ImageDownloader.findByteSize(imageId);
-      var mimeType = await ImageDownloader.findMimeType(imageId);
-    } on PlatformException catch (error) {
-      print(error);
     }
-  }}
+  }
 }
+
+

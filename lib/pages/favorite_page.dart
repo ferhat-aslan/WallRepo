@@ -6,6 +6,7 @@ import 'package:wall_repo/pages/home_page.dart';
 import 'package:wall_repo/services/getData.dart';
 import 'package:wall_repo/services/save.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:wall_repo/widgets/dialog.dart';
 
 class FavoritePage extends StatefulWidget {
   final List<String> lpd ;
@@ -139,96 +140,105 @@ appBar: AppBar(
                         ),
                         itemCount: f.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Stack(
-                              alignment: Alignment.center,
-                              textDirection: TextDirection.rtl,
-                              fit: StackFit.loose,
-                              clipBehavior: Clip.hardEdge,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                      width: genislik * 0.45,
-                                      height: yukseklik * 0.35,
-                                      child: Image.network(
-                                        f[index]
-                                            .toString(),
-                                        fit: BoxFit.cover,
-                                      )),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 0, 20, 25),
+                          return GestureDetector(
+                            
+                            onTap: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (_) => ImageDialog(f[index]
+                                      .toString()));
+                            },
+                            child: Stack(
+                                alignment: Alignment.center,
+                                textDirection: TextDirection.rtl,
+                                fit: StackFit.loose,
+                                clipBehavior: Clip.hardEdge,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
                                     child: Container(
-                                      decoration: new BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: IconButton(
-                                          onPressed: () {
-                                           
-                                            String link=widget.lpd[index]
-                                                      .toString();
-                                            if(!(widget.lpd.contains(link))){
-                                              setState(() {
-widget.lpd.add(widget.lpd[index].toString());
-
-                                            });
-                                            }
-                                            else{
-                                              setState(() {
-                                                widget.lpd.remove(widget.lpd[index].toString());
+                                        width: genislik * 0.45,
+                                        height: yukseklik * 0.35,
+                                        child: Image.network(
+                                          f[index]
+                                              .toString(),
+                                          fit: BoxFit.cover,
+                                        )),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 25),
+                                      child: Container(
+                                        decoration: new BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: IconButton(
+                                            onPressed: () {
+                                             
+                                              String link=widget.lpd[index]
+                                                        .toString();
+                                              if(!(widget.lpd.contains(link))){
+                                                setState(() {
+                          widget.lpd.add(widget.lpd[index].toString());
+                          
                                               });
+                                              }
+                                              else{
+                                                setState(() {
+                                                  widget.lpd.remove(widget.lpd[index].toString());
+                                                });
+                                                
+                                              }
                                               
-                                            }
                                             
-                                          
-                                          },
-                                          icon: Icon(Icons.favorite_rounded,
-                                            color: Colors.red,)),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 0, 10, 25),
-                                    child: Container(
-                                      decoration: new BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
+                                            },
+                                            icon: Icon(Icons.favorite_rounded,
+                                              color: Colors.red,)),
                                       ),
-                                      child: IconButton(
-                                          onPressed: () async{
-                                            try {
-       
-       // Saved with this method.
-       var imageId =
-           await ImageDownloader.downloadImage(f[index].toString());
-       if (imageId == null) {
-          return;
-       }
-       // Below is a method of obtaining saved image information.
-       var fileName = await ImageDownloader.findName(imageId);
-       var path = await ImageDownloader.findPath(imageId);
-       var size = await ImageDownloader.findByteSize(imageId);
-       var mimeType = await ImageDownloader.findMimeType(imageId);
-       
-       
-      } on PlatformException catch (error) {
-          print(error);
-                                          }},
-                                          icon: Icon(
-                                            Icons.downloading_outlined,
-                                            color: Colors.black,
-                                          )),
                                     ),
                                   ),
-                                ),
-                              ]);
+                                  Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 10, 25),
+                                      child: Container(
+                                        decoration: new BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: IconButton(
+                                            onPressed: () async{
+                                              try {
+                                 
+                                 // Saved with this method.
+                                 var imageId =
+                                     await ImageDownloader.downloadImage(f[index].toString());
+                                 if (imageId == null) {
+                                    return;
+                                 }
+                                 // Below is a method of obtaining saved image information.
+                                 var fileName = await ImageDownloader.findName(imageId);
+                                 var path = await ImageDownloader.findPath(imageId);
+                                 var size = await ImageDownloader.findByteSize(imageId);
+                                 var mimeType = await ImageDownloader.findMimeType(imageId);
+                                 
+                                 
+                                } on PlatformException catch (error) {
+                                    print(error);
+                                            }},
+                                            icon: Icon(
+                                              Icons.downloading_outlined,
+                                              color: Colors.black,
+                                            )),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                          );
                         }),
                   ),
 
