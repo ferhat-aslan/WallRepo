@@ -88,6 +88,28 @@ class _FavoritePageState extends State<FavoritePage> {
                 },
               ),
               SizedBox(height: yukseklik*0.02,),
+              TextButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon((Theme.of(context).backgroundColor==ThemeData.dark().backgroundColor)?Icons.light_mode:Icons.dark_mode),
+                      SizedBox(
+                        width: genislik * 0.03,
+                      ),
+                      Text(
+                        (Theme.of(context).backgroundColor==ThemeData.dark().backgroundColor)?"Açık Tema":"Koyu Tema",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    ],
+                  ),
+                ),
+                onPressed: () {
+                  setState(() { 
+                    widget.togglecall();
+                  });
+                  },
+              ),
               
             ],
           ),

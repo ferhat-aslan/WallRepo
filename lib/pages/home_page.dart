@@ -274,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () {
-                  print(widget.liked);
+                  
                   Navigator.push(
                       context,
                       MaterialPageRoute(

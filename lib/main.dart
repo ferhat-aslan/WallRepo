@@ -26,16 +26,24 @@ class _MyAppState extends State<MyApp> {
   }
   
 loadLiked()async{
+  List<String> strList = lkd.map((i) => i.toString()).toList();
 SharedPreferences pref = await SharedPreferences.getInstance();
 if(pref.getStringList("likedPhotos")!= null)
 {
-lkd=pref.getStringList("likedPhotos")!;
+
+List<String>? savedStrList = pref.getStringList('likedPhotos');
+    List<String> ProductList = savedStrList!.map((i) =>i.toString()).toList();
+    lkd=ProductList;
+    print(lkd);
 }
 else{
-  pref.setStringList("likedPhotos",lkd);
+  pref.setStringList("likedPhotos",strList);
+  lkd=strList.map((i) =>i.toString()).toList();
+  print("object  ${lkd}" );
 }
 setState(() {
-  
+  print(lkd);
+  print("object  ${lkd}" );
 });
 
 }
