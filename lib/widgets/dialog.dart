@@ -9,23 +9,27 @@ class ImageDialog extends StatelessWidget {
     var genislik = MediaQuery.of(context).size.width;
     var yukseklik = MediaQuery.of(context).size.height;
     return Dialog(
+
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0))),
-      clipBehavior: Clip.hardEdge,
+     // clipBehavior: Clip.hardEdge,
       elevation: 55,
       child: Stack(
+
           alignment: Alignment.center,
           textDirection: TextDirection.rtl,
-          fit: StackFit.expand,
-          clipBehavior: Clip.hardEdge,
+        fit: StackFit.expand,
+         // clipBehavior: Clip.hardEdge,
           children: [
             Container(
-              width: genislik * 0.75,
-              height: yukseklik * 0.75,
+              width: 350,
+              height: 350,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(35),
                   image: DecorationImage(
-                      image: NetworkImage(url), fit: BoxFit.cover)),
+                      image: NetworkImage(url), fit: BoxFit.cover,
+                      scale: 0.5
+                      )),
             ),
             Align(
               alignment: Alignment.bottomCenter,
