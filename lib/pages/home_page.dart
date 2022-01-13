@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
        
        // Saved with this method.
        var imageId =
-           await ImageDownloader.downloadImage(snapshot.data[index]["urls"]["regular"].toString());
+           await ImageDownloader.downloadImage(snapshot.data[index]["urls"]["full"].toString());
        if (imageId == null) {
           return;
        }
@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Icon(Icons.favorite_outlined),
+                      Icon(Icons.favorite_rounded),
                       SizedBox(
                         width: genislik * 0.03,
                       ),
@@ -281,6 +281,28 @@ class _HomePageState extends State<HomePage> {
                           builder: (context) =>
                               FavoritePage(widget.liked, widget.togglecall)));
                 },
+              ),
+              TextButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon((Theme.of(context).backgroundColor==ThemeData.dark().backgroundColor)?Icons.light_mode:Icons.dark_mode),
+                      SizedBox(
+                        width: genislik * 0.03,
+                      ),
+                      Text(
+                        (Theme.of(context).backgroundColor==ThemeData.dark().backgroundColor)?"Açık Tema":"Koyu Tema",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    ],
+                  ),
+                ),
+                onPressed: () {
+                  setState(() { 
+                    widget.togglecall();
+                  });
+                  },
               ),
               SizedBox(
                 height: yukseklik * 0.02,

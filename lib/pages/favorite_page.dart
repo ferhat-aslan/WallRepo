@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:wall_repo/pages/home_page.dart';
 import 'package:wall_repo/services/getData.dart';
 import 'package:wall_repo/services/save.dart';
@@ -178,9 +180,25 @@ widget.lpd.add(widget.lpd[index].toString());
                                         shape: BoxShape.circle,
                                       ),
                                       child: IconButton(
-                                          onPressed: () {
-                                            save(widget.lpd[index].toString());
-                                          },
+                                          onPressed: () async{
+                                            try {
+       
+       // Saved with this method.
+       var imageId =
+           await ImageDownloader.downloadImage(f[index].toString());
+       if (imageId == null) {
+          return;
+       }
+       // Below is a method of obtaining saved image information.
+       var fileName = await ImageDownloader.findName(imageId);
+       var path = await ImageDownloader.findPath(imageId);
+       var size = await ImageDownloader.findByteSize(imageId);
+       var mimeType = await ImageDownloader.findMimeType(imageId);
+       
+       
+      } on PlatformException catch (error) {
+          print(error);
+                                          }},
                                           icon: Icon(
                                             Icons.downloading_outlined,
                                             color: Colors.black,
